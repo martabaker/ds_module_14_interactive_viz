@@ -8,12 +8,10 @@ function buildMetadata(sample) {
     
     // get the metadata field
     let metadata = data.metadata;
-    // console.log(JSON.stringify(metadata, null, 2))
 
     // Filter the metadata for the object with the desired sample number
     // Casting the metadata id to a String because it is stored in the JSON as an integer; Source: https://brainstation.io/learn/javascript/casting
     let targetMetadata = metadata.filter(x => String(x.id) === sample)[0];
-    console.log(targetMetadata.length);
 
     // Use d3 to select the panel with id of `#sample-metadata`
     let dashboard = d3.select('#sample-metadata')
@@ -25,31 +23,9 @@ function buildMetadata(sample) {
     // tags for each key-value in the filtered metadata.
     for (let key in targetMetadata){
 
-      // Create new elements
-      // if (key === 'id') {
-      //   dashboard.append("#metadataId").text(`${targetMetadata[key]}`)
-      // } else if (key === 'ethnicity') {
-      //   dashboard.append('#metadataEthnicity').text(`${targetMetadata[key]}`)
-      // }
-
-      // Set content for the new elements
-      // p1.textContent = `ID: ${targetMetadata.id}`;
-      // p2.textContent = `ETHNICITY: ${targetMetadata.ethnicity}`;
-      // p3.textContent = `GENDER: ${targetMetadata.gender}`;
-      // p4.textContent = `AGE: ${targetMetadata.age}`;
-      // p5.textContent = `LOCATION: ${targetMetadata.location}`;
-      // p6.textContent = `BBTYPE: ${targetMetadata.bbtype}`;
-      // p7.textContent = `WFREQ: ${targetMetadata.wfreq}`;
-
       // Append new elements to the selected element
       dashboard.append("h6").text(`${key}: ${targetMetadata[key]}`);
-      // dashboard.append("#metadataEthnicity").text(targetMetadata.ethnicity);
-      // dashboard.append("#metadataGender").text(targetMetadata.gender);
-      // dashboard.append("#metadataAge").text(targetMetadata.age);
-      // dashboard.append("#metadataLocation").text(targetMetadata.location);
-      // dashboard.append("#metadataBbtype").text(targetMetadata.bbtype);
-      // dashboard.append("#metadataWfreq").text(targetMetadata.wfreq);
-    }
+    };
 
   });
 }
@@ -63,7 +39,6 @@ function buildCharts(sample) {
 
     // Filter the samples for the object with the desired sample number
     let targetSample = samples.filter(x => x.id === sample)[0];
-    console.log(targetSample)
 
     // Get the otu_ids, otu_labels, and sample_values
     let otu_ids = targetSample.otu_ids;
@@ -100,8 +75,6 @@ function buildCharts(sample) {
 
     // For the Bar Chart, map the otu_ids to a list of strings for your yticks
     let yticks = otu_ids.map(x => `OTU ${x}`);
-    console.log(yticks)
-
 
     // Build a Bar Chart
     // Don't forget to slice and reverse the input data appropriately
@@ -132,11 +105,8 @@ function buildCharts(sample) {
 }
 
 // Function to run on page load
-// DELETE LATER: Prof called this do_work, I called this "filter button"
 function init() {
   request.then((data) => {
-
-    console.log(data)
 
     // Get the names field
     let names = data.names
@@ -145,8 +115,6 @@ function init() {
     let dropdown = d3.select("#selDataset");
 
     // Use the list of sample names to populate the select options
-    // Hint: Inside a loop, you will need to use d3 to append a new
-    // option for each sample name.
     for (let i=0; i < names.length; i++){
       // Get each individual name (for clarity)
       let name = names[i]
@@ -156,8 +124,7 @@ function init() {
     }
 
     // Get the first sample from the list
-    let firstSample = names[0]
-    console.log(firstSample)
+    let firstSample = names[0];
 
     // Build charts and metadata panel with the first sample
     buildCharts(firstSample);
