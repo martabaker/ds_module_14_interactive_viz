@@ -13,19 +13,18 @@ function buildMetadata(sample) {
     // Casting the metadata id to a String because it is stored in the JSON as an integer; Source: https://brainstation.io/learn/javascript/casting
     let targetMetadata = metadata.filter(x => String(x.id) === sample)[0];
 
-    // Use d3 to select the panel with id of `#sample-metadata`
-    let dashboard = d3.select('#sample-metadata')
+    // Select the panel with id of `#sample-metadata`
+    let dashboard = d3.select('#sample-metadata');
 
     // Use `.html("") to clear any existing metadata
-    dashboard.html("")
+    dashboard.html("");
 
-    // Inside a loop, you will need to use d3 to append new
-    // tags for each key-value in the filtered metadata.
+    // Append dashboard with each key-value in the filtered metadata.
     for (let key in targetMetadata){
 
       // Append new elements to the selected element
       dashboard.append("h6").text(`${key}: ${targetMetadata[key]}`);
-    };
+    }
 
   });
 }
@@ -61,7 +60,7 @@ function buildCharts(sample) {
     let traces1 = [trace1];
 
     let layout1 = {
-      title: `Bacteria Cultures per Sample for Subject`,
+      title: `Bacteria Cultures per Sample for Subject ${targetSample.id}`,
       xaxis: {
         title: 'OTU ID'
       },
@@ -70,14 +69,13 @@ function buildCharts(sample) {
       }
     };
 
-    Plotly.newPlot('bubble', traces1, layout1)
+    Plotly.newPlot('bubble', traces1, layout1);
 
 
     // For the Bar Chart, map the otu_ids to a list of strings for your yticks
     let yticks = otu_ids.map(x => `OTU ${x}`);
 
-    // Build a Bar Chart
-    // Don't forget to slice and reverse the input data appropriately
+    // Build a Bar Chart to get top 10 Bacteria cultures
     let trace2 = {
       x: sample_values.slice(0, 10).reverse(),
       y: yticks.slice(0, 10).reverse(),
@@ -93,13 +91,13 @@ function buildCharts(sample) {
     let traces2 = [trace2];
 
     let layout2 = {
-      title: `Top 10 Bacteria Cultures Found for Subject`,
+      title: `Top 10 Bacteria Cultures Found for Subject ${targetSample.id}`,
       xaxis: {
         title: 'Number of Bacteria'
       }
   };
 
-  Plotly.newPlot('bar', traces2, layout2)
+  Plotly.newPlot('bar', traces2, layout2);
 
   });
 }
@@ -109,15 +107,16 @@ function init() {
   request.then((data) => {
 
     // Get the names field
-    let names = data.names
+    let names = data.names;
 
-    // Use d3 to select the dropdown with id of `#selDataset`
+    // Select the dropdown with id of `#selDataset`
     let dropdown = d3.select("#selDataset");
 
     // Use the list of sample names to populate the select options
     for (let i=0; i < names.length; i++){
+
       // Get each individual name (for clarity)
-      let name = names[i]
+      let name = names[i];
 
       // append the option list to dynamically build the dropdown list
       dropdown.append("option").text(name);
@@ -134,6 +133,7 @@ function init() {
 
 // Function for event listener
 function optionChanged(newSample) {
+
   // Build charts and metadata panel each time a new sample is selected
   buildCharts(newSample);
   buildMetadata(newSample);
